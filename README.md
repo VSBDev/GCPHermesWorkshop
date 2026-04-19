@@ -146,8 +146,9 @@ git clone https://github.com/VSBDev/GCPHermesWorkshop.git
 # entra en la carpeta del proyecto
 cd GCPHermesWorkshop
 
-# ejecuta el instalador principal y le pasa tu project id
-bash scripts/bootstrap-vm.sh --project-id TU_PROJECT_ID
+# ejecuta el instalador principal
+# el script te pedirá el project id en la terminal
+bash scripts/bootstrap-vm.sh
 
 # recarga el PATH de la shell actual por si Hermes acaba de instalarse
 source ~/.bashrc

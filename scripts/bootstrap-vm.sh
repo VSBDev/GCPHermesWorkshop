@@ -14,10 +14,10 @@ HERMES_BIN=""
 usage() {
   cat <<'EOF'
 Usage:
-  bash scripts/bootstrap-vm.sh --project-id YOUR_PROJECT_ID [options]
+  bash scripts/bootstrap-vm.sh [options]
 
 Options:
-  --project-id   Google Cloud project ID. Required.
+  --project-id   Google Cloud project ID. Optional. If omitted, the script asks for it.
   --location     Vertex AI location. Default: global
   --model-id     Vertex model ID. Default: google/gemma-4-26b-a4b-it-maas
   --stream-mode  Proxy stream mode. Default: synthetic
@@ -68,6 +68,19 @@ detect_hermes_bin() {
   return 1
 }
 
+prompt_for_project_id() {
+  if [[ -n "${PROJECT_ID}" ]]; then
+    return 0
+  fi
+
+  if [[ -t 0 && -t 1 ]]; then
+    printf '\nGoogle Cloud project ID: '
+    read -r PROJECT_ID
+  fi
+
+  [[ -n "${PROJECT_ID}" ]] || fail "Google Cloud project ID is required. Pass --project-id or enter it when prompted"
+}
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --project-id)
@@ -112,7 +125,7 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-[[ -n "${PROJECT_ID}" ]] || fail "--project-id is required"
+prompt_for_project_id
 
 log "Installing OS packages"
 sudo apt update
